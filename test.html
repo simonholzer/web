@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neon Physics Builder</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.19.0/matter.min.js"></script>
+    <style>
+        /* --- 1. VISUAL STYLES (The "Cool" Look) --- */
+        body {
+            margin: 0;
+            overflow: hidden;
+            background-color: #050505;
+            font-family: 'Segoe UI', sans-serif;
+            color: white;
+            user-select: none;
+        }
+
+        /* Background Grid */
+        .grid-bg {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+            background-size: 60px 60px;
+            z-index: -1;
+        }
+
+        /* Ambient Glow */
+        .glow-center {
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            width: 800px; height: 800px;
+            background: radial-gradient(circle, rgba(100, 0, 255, 0.1), transparent 60%);
+            z-index: -1;
+        }
+
+        /* UI Overlay */
+        #ui-layer {
+            position: absolute;
+            top: 30px;
+            left: 30px;
+            z-index: 100;
+            pointer-events: none; /* Let clicks pass through */
+        }
+        h1 { margin: 0; font-weight: 300; letter-spacing: 2px; text-shadow: 0 0 10px rgba(255,255,255,0.5); }
+        p { margin-top: 5px; opacity: 0.7; font-size: 0.9rem; }
+
+        button {
+            pointer-events: auto;
+            margin-top: 15px;
+            background: rgba(0, 255, 255, 0.1);
+            border: 1px solid rgba(0, 255, 255, 0.4);
+            color: cyan;
+            padding: 12px 24px;
+            font-size: 1rem;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 0 15px rgba(0, 255, 255, 0.1);
+        }
+        button:hover {
+            background: rgba(0, 255, 255, 0.3);
+            box-shadow: 0 0 25px rgba(0, 255, 255, 0.6);
+        }
+
+        /* --- THE OBJECTS --- */
+        
+        /* Common style for anything rendered */
+        .phys-obj {
+            position: absolute;
+            transform-origin: center center;
+            /* We use transform translate in JS, so top/left stay 0 */
+            top: 0; left: 0;
+        }
+
+        /* The Draggable Obstacles (Glass) */
+        .obstacle {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            cursor: grab;
+            transition: border-color 0.2s;
+        }
+        .obstacle:hover {
+            border-color: rgba(255, 255, 255, 0.5);
+            box-shadow: 0 10px 40px rgba(255, 255, 255, 0.1);
+        }
+        .obstacle:active {
+            cursor: grabbing;
+            border-color: cyan;
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.4);
+        }
+        .obstacle span {
+            font-size: 0.7rem;
+            opacity: 0.5;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        /* The Physics Ball */
+        .ball {
+            border-radius: 50%;
+            background: white;
+            box-shadow: 0 0 15px rgba(255, 0, 100, 0.8), inset -2px -2px 10px rgba(0,0,0,0.2);
+            background: radial-gradient(circle at 30% 30%, #fff, #ff0055);
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="grid-bg"></div>
+    <div class="glow-center"></div>
+
+    <div id="ui-layer">
+        <h1>Gravity Lab</h1>
+        <p>1. Drag the glass panels to build a path.<br>2. Click button to test physics.</p>
+        <button onclick="spawnBall()">Drop Ball</button>
+    </div>
+
+    <div id="game-area"></div>
+
+    <script>
+        // --- PHYSICS SETUP (Matter.js) ---
+        const Engine = Matter.Engine,
+              World = Matter.World,
+              Bodies = Matter.Bodies,
+              Body = Matter.Body;
+
+        const engine = Engine.create();
+        const world = engine.world;
+        
+        // Setup simple loop
+        const runner = () => {
+            Engine.update(engine, 1000 / 60);
+            requestAnimationFrame(renderLoop);
+            requestAnimationFrame(runner);
+        };
+        runner();
+
+        // Arrays to keep track of our synchronized objects
+        const physicsEntities = [];
+
+        // --- CREATION FUNCTIONS ---
+
+        // 1. createObstacle: Makes a Static Glass Box
+        function createObstacle(x, y, w, h, label = "") {
+            // A. Create Physics Body (Static)
+            const body = Bodies.rectangle(x, y, w, h, { 
+                isStatic: true,
+                friction: 0,
+                restitution: 0.8 // Bouncy walls
+            });
+            World.add(world, body);
+
+            // B. Create HTML Element
+            const el = document.createElement('div');
+            el.className = 'phys-obj obstacle';
+            el.style.width = w + 'px';
+            el.style.height = h + 'px';
+            // Center the anchor point for easier sync
+            el.style.marginLeft = -(w/2) + 'px';
+            el.style.marginTop = -(h/2) + 'px';
+            
+            if(label) {
+                el.innerHTML = `<span>${label}</span>`;
+            }
+
+            // Add drag interaction
+            makeDraggable(el, body);
+
+            document.getElementById('game-area').appendChild(el);
+
+            // C. Link them
+            physicsEntities.push({ body: body, elem: el, type: 'static' });
+        }
+
+        // 2. spawnBall: Makes a Dynamic Falling Ball
+        function spawnBall() {
+            const radius = 20;
+            // Random start x
+            const startX = Math.random() * (window.innerWidth - 100) + 50; 
+            
+            // A. Create Physics Body (Dynamic)
+            const body = Bodies.circle(startX, -50, radius, {
+                restitution: 0.9, // Very bouncy
+                friction: 0.001,
+                density: 0.04
+            });
+            World.add(world, body);
+
+            // B. Create HTML Element
+            const el = document.createElement('div');
+            el.className = 'phys-obj ball';
+            el.style.width = (radius * 2) + 'px';
+            el.style.height = (radius * 2) + 'px';
+            el.style.marginLeft = -radius + 'px';
+            el.style.marginTop = -radius + 'px';
+            
+            document.getElementById('game-area').appendChild(el);
+
+            // C. Link them
+            physicsEntities.push({ body: body, elem: el, type: 'dynamic' });
+
+            // Cleanup balls that fall off screen
+            setTimeout(() => {
+                if(body.position.y > window.innerHeight + 100) {
+                    World.remove(world, body);
+                    el.remove();
+                    // Remove from array (simplified for demo)
+                }
+            }, 10000);
+        }
+
+        // --- RENDER LOOP ---
+        // This syncs the Physics calculation to the HTML appearance
+        function renderLoop() {
+            physicsEntities.forEach(ent => {
+                const { x, y } = ent.body.position;
+                const angle = ent.body.angle;
+
+                // Move the HTML element to where the physics body is
+                ent.elem.style.transform = `translate(${x}px, ${y}px) rotate(${angle}rad)`;
+            });
+        }
+
+        // --- DRAG LOGIC (The "Level Editor") ---
+        function makeDraggable(element, body) {
+            let isDragging = false;
+            
+            element.addEventListener('mousedown', (e) => {
+                isDragging = true;
+                element.style.cursor = 'grabbing';
+            });
+
+            window.addEventListener('mouseup', () => {
+                isDragging = false;
+                element.style.cursor = 'grab';
+            });
+
+            window.addEventListener('mousemove', (e) => {
+                if (!isDragging) return;
+
+                // 1. Visual Move (Instant feedback)
+                // We actually don't need to manually move the DOM here,
+                // We move the Physics Body, and the Render Loop will update the DOM.
+
+                // 2. Physics Move
+                // We strictly set the body position to the mouse
+                Body.setPosition(body, {
+                    x: e.clientX,
+                    y: e.clientY
+                });
+                
+                // Reset velocity so it doesn't "fling" internally
+                Body.setVelocity(body, { x: 0, y: 0 });
+            });
+        }
+
+        // --- INITIAL SETUP ---
+        // Let's create some starting obstacles
+        createObstacle(window.innerWidth / 2, 400, 300, 40, "PLATFORM");
+        createObstacle(window.innerWidth / 2 - 200, 250, 200, 20, "RAMP L");
+        createObstacle(window.innerWidth / 2 + 200, 600, 200, 20, "RAMP R");
+        
+        // Rotate the ramps a bit using Matter.js API
+        Body.setAngle(physicsEntities[1].body, 0.4); // Tilt Ramp L
+        Body.setAngle(physicsEntities[2].body, -0.4); // Tilt Ramp R
+
+        // Floor (Invisible physics wall just in case)
+        const floor = Bodies.rectangle(window.innerWidth/2, window.innerHeight + 50, window.innerWidth, 100, { isStatic: true });
+        World.add(world, floor);
+
+    </script>
+</body>
+</html>

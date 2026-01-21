@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neon Physics Architect</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.19.0/matter.min.js"></script>
+    <style>
+        :root {
+            --neon-cyan: #00f2ff;
+            --neon-pink: #ff007b;
+            --glass: rgba(255, 255, 255, 0.07);
+        }
+
+        body {
+            margin: 0;
+            overflow: hidden;
+            background-color: #050505;
+            font-family: 'Inter', sans-serif;
+            color: white;
+            user-select: none;
+        }
+
+        /* --- Background --- */
+        .grid {
+            position: absolute;
+            inset: 0;
+            background-image: 
+                linear-gradient(rgba(0, 242, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 242, 255, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            z-index: -1;
+        }
+
+        /* --- Injector Zone --- */
+        #drop-zone {
+            position: absolute;
+            top: 0; left: 50%;
+            transform: translateX(-50%);
+            width: 140px; height: 50px;
+            background: linear-gradient(to bottom, var(--neon-cyan), transparent);
+            clip-path: polygon(0% 0%, 100% 0%, 80% 100%, 20% 100%);
+            opacity: 0.4;
+            display: flex;
+            justify-content: center;
+            padding-top: 5px;
+            font-size: 0.6rem;
+            letter-spacing: 3px;
+            font-weight: bold;
+            border-top: 2px solid var(--neon-cyan);
+            z-index: 5;
+        }
+
+        /* --- UI Panels --- */
+        .panel {
+            position: absolute;
+            background: rgba(10, 10, 10, 0.8);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            border-radius: 12px;
+            z-index: 100;
+        }
+
+        #controls { top: 20px; left: 20px; }
+        #inventory { bottom: 20px; left: 50%; transform: translateX(-50%); display: flex; gap: 10px; }
+
+        button {
+            background: var(--glass);
+            border: 1px solid rgba(255,255,255,0.1);
+            color: white;
+            padding: 10px 18px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: 0.2s;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        button:hover {
+            border-color: var(--neon-cyan);
+            background: rgba(0, 242, 255, 0.1);
+            box-shadow: 0 0 15px rgba(0, 242, 255, 0.2);
+        }
+
+        .btn-drop { background: var(--neon-pink); border: none; width: 100%; margin-bottom: 8px; }
+        .btn-drop:hover { background: #ff2b8f; box-shadow: 0 0 20px rgba(255, 0, 123, 0.4); }
+
+        /* --- Physics Elements --- */
+        .phys-obj {
+            position: absolute;
+            top: 0; left: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .obstacle {
+            background: var(--glass);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.15);
+            cursor: grab;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+        }
+
+        .obstacle:active { cursor: grabbing; border-color: var(--neon-cyan); }
+
+        /* Rotation Handle */
+        .rotate-handle {
+            position: absolute;
+            bottom: -25px;
+            width: 12px;
+            height: 12px;
+            background: var(--neon-cyan);
+            border-radius: 50%;
+            cursor: alias;
+            box-shadow: 0 0 10px var(--neon-cyan);
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+
+        .obstacle:hover .rotate-handle { opacity: 1; }
+
+        .ball {
+            background: radial-gradient(circle at 30% 30%, #fff, var(--neon-pink));
+            border-radius: 50%;
+            box-shadow: 0 0 15px var(--neon-pink);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="grid"></div>
+    <div id="drop-zone">READY</div>
+
+    <div id="controls" class="panel">
+        <button class="btn-drop" onclick="spawnBall()">LAUNCH BALL</button>
+        <button onclick="clearBalls()">Clear All</button>
+    </div>
+
+    <div id="inventory" class="panel">
+        <button onclick="addObj('rect')">+ Block</button>
+        <button onclick="addObj('long')">+ Beam</button>
+        <button onclick="addObj('circle')">+ Bumper</button>
+    </div>
+
+    <div id="world"></div>
+
+    <script>
+        const { Engine, World, Bodies, Body, Composite } = Matter;
+        const engine = Engine.create();
+        const container = document.getElementById('world');
+        const entities = [];
+
+        // Engine Loop
+        (function update() {
+            Engine.update(engine, 1000 / 60);
+            entities.forEach(ent => {
+                const { x, y } = ent.body.position;
+                ent.el.style.transform = `translate(${x}px, ${y}px) rotate(${ent.body.angle}rad)`;
+            });
+            requestAnimationFrame(update);
+        })();
+
+        function addObj(type) {
+            let w = 70, h = 70, isCircle = false;
+            if(type === 'long') { w = 220; h = 25; }
+            if(type === 'circle') { isCircle = true; }
+
+            const x = window.innerWidth / 2;
+            const y = window.innerHeight / 2;
+            
+            const body = isCircle 
+                ? Bodies.circle(x, y, w/2, { isStatic: true, restitution: 0.9 })
+                : Bodies.rectangle(x, y, w, h, { isStatic: true, restitution: 0.7 });
+
+            const el = document.createElement('div');
+            el.className = `phys-obj obstacle ${isCircle ? 'circle' : ''}`;
+            el.style.width = w + 'px';
+            el.style.height = h + 'px';
+            el.style.marginLeft = -w/2 + 'px';
+            el.style.marginTop = -h/2 + 'px';
+            if(isCircle) el.style.borderRadius = '50%';
+            
+            // Add Rotation Handle
+            const handle = document.createElement('div');
+            handle.className = 'rotate-handle';
+            el.appendChild(handle);
+
+            World.add(engine.world, body);
+            container.appendChild(el);
+            const ent = { body, el, isBall: false };
+            entities.push(ent);
+
+            setupInteractions(ent, handle);
+        }
+
+        function setupInteractions(ent, handle) {
+            let isDragging = false;
+            let isRotating = false;
+
+            // Dragging Position
+            ent.el.addEventListener('mousedown', (e) => {
+                if(e.target === handle) {
+                    isRotating = true;
+                } else {
+                    isDragging = true;
+                }
+                e.stopPropagation();
+            });
+
+            window.addEventListener('mousemove', (e) => {
+                if (isDragging) {
+                    Body.setPosition(ent.body, { x: e.clientX, y: e.clientY });
+                }
+                if (isRotating) {
+                    const pos = ent.body.position;
+                    const angle = Math.atan2(e.clientY - pos.y, e.clientX - pos.x);
+                    Body.setAngle(ent.body, angle - Math.PI/2);
+                }
+            });
+
+            window.addEventListener('mouseup', () => {
+                isDragging = false;
+                isRotating = false;
+            });
+        }
+
+        function spawnBall() {
+            const r = 12;
+            const body = Bodies.circle(window.innerWidth/2, 30, r, { restitution: 0.6 });
+            const el = document.createElement('div');
+            el.className = 'phys-obj ball';
+            el.style.width = r*2 + 'px';
+            el.style.height = r*2 + 'px';
+            el.style.marginLeft = -r + 'px';
+            el.style.marginTop = -r + 'px';
+
+            World.add(engine.world, body);
+            container.appendChild(el);
+            entities.push({ body, el, isBall: true });
+        }
+
+        function clearBalls() {
+            for(let i = entities.length-1; i >= 0; i--) {
+                if(entities[i].isBall) {
+                    World.remove(engine.world, entities[i].body);
+                    entities[i].el.remove();
+                    entities.splice(i, 1);
+                }
+            }
+        }
+
+        // Add a default floor
+        World.add(engine.world, Bodies.rectangle(window.innerWidth/2, window.innerHeight+50, window.innerWidth, 100, { isStatic: true }));
+    </script>
+</body>
+</html>

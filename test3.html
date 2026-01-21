@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neon Physics Lab</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.19.0/matter.min.js"></script>
+    <style>
+        :root {
+            --neon-cyan: #00f2ff;
+            --neon-pink: #ff007b;
+            --glass: rgba(255, 255, 255, 0.08);
+        }
+
+        body {
+            margin: 0;
+            overflow: hidden;
+            background-color: #050505;
+            font-family: 'Segoe UI', sans-serif;
+            color: white;
+            user-select: none;
+        }
+
+        /* --- Background Graphics --- */
+        .grid {
+            position: absolute;
+            inset: 0;
+            background-image: 
+                linear-gradient(rgba(0, 242, 255, 0.04) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 242, 255, 0.04) 1px, transparent 1px);
+            background-size: 40px 40px;
+            z-index: -1;
+        }
+
+        /* --- Fixed Drop Spot (Injector) --- */
+        #drop-zone {
+            position: absolute;
+            top: 0; left: 50%;
+            transform: translateX(-50%);
+            width: 160px; height: 60px;
+            background: linear-gradient(to bottom, var(--neon-pink), transparent);
+            clip-path: polygon(0% 0%, 100% 0%, 85% 100%, 15% 100%);
+            opacity: 0.6;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 0.7rem;
+            letter-spacing: 4px;
+            font-weight: 900;
+            border-top: 3px solid var(--neon-pink);
+            z-index: 10;
+            text-shadow: 0 0 10px var(--neon-pink);
+        }
+
+        /* --- UI Controls --- */
+        .panel {
+            position: absolute;
+            background: rgba(10, 10, 10, 0.8);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            border-radius: 12px;
+            z-index: 100;
+        }
+
+        #controls { top: 20px; left: 20px; }
+        #inventory { bottom: 30px; left: 50%; transform: translateX(-50%); display: flex; gap: 15px; }
+
+        button {
+            background: var(--glass);
+            border: 1px solid rgba(255,255,255,0.1);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+
+        button:hover {
+            border-color: var(--neon-cyan);
+            background: rgba(0, 242, 255, 0.15);
+            box-shadow: 0 0 20px rgba(0, 242, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .btn-launch {
+            background: var(--neon-pink);
+            border: none;
+            width: 100%;
+            margin-bottom: 10px;
+            box-shadow: 0 0 15px rgba(255, 0, 123, 0.3);
+        }
+
+        /* --- Object Visuals --- */
+        .phys-obj {
+            position: absolute;
+            top: 0; left: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            will-change: transform;
+        }
+
+        .obstacle {
+            background: var(--glass);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255,255,255,0.2);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.6);
+            cursor: grab;
+        }
+
+        .obstacle:active { cursor: grabbing; border-color: var(--neon-cyan); }
+
+        /* Rotation Handle (The Turn Tool) */
+        .rotate-handle {
+            position: absolute;
+            bottom: -30px;
+            width: 16px;
+            height: 16px;
+            background: var(--neon-cyan);
+            border-radius: 50%;
+            cursor: crosshair;
+            box-shadow: 0 0 15px var(--neon-cyan);
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+
+        .obstacle:hover .rotate-handle { opacity: 1; }
+
+        .ball {
+            background: radial-gradient(circle at 30% 30%, #fff, var(--neon-pink));
+            border-radius: 50%;
+            box-shadow: 0 0 20px var(--neon-pink);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="grid"></div>
+    <div id="drop-zone">INJECTOR</div>
+
+    <div id="controls" class="panel">
+        <button class="btn-launch" onclick="spawnBall()">LAUNCH BALL</button>
+        <button onclick="clearBalls()">Clear Path</button>
+    </div>
+
+    <div id="inventory" class="panel">
+        <button onclick="addObj('block')">+ Block</button>
+        <button onclick="addObj('beam')">+ Long Beam</button>
+        <button onclick="addObj('bumper')">+ Bumper</button>
+    </div>
+
+    <div id="canvas-wrap"></div>
+
+    <script>
+        const { Engine, World, Bodies, Body } = Matter;
+        const engine = Engine.create();
+        const container = document.getElementById('canvas-wrap');
+        const entities = [];
+
+        // Main Physics Sync Loop
+        (function update() {
+            Engine.update(engine, 1000 / 60);
+            entities.forEach(ent => {
+                const { x, y } = ent.body.position;
+                ent.el.style.transform = `translate(${x}px, ${y}px) rotate(${ent.body.angle}rad)`;
+            });
+            requestAnimationFrame(update);
+        })();
+
+        // Function to create draggable/rotatable obstacles
+        function addObj(type) {
+            let w = 80, h = 80, isCircle = false;
+            
+            if(type === 'beam') { w = 250; h = 25; }
+            if(type === 'bumper') { isCircle = true; w = 60; h = 60; }
+
+            const x = window.innerWidth / 2;
+            const y = window.innerHeight / 2;
+            
+            const body = isCircle 
+                ? Bodies.circle(x, y, w/2, { isStatic: true, restitution: 1.2 }) 
+                : Bodies.rectangle(x, y, w, h, { isStatic: true, restitution: 0.8 });
+
+            const el = document.createElement('div');
+            el.className = `phys-obj obstacle`;
+            el.style.width = w + 'px';
+            el.style.height = h + 'px';
+            el.style.marginLeft = -w/2 + 'px';
+            el.style.marginTop = -h/2 + 'px';
+            if(isCircle) el.style.borderRadius = '50%';
+            
+            // Create the Rotate Handle
+            const handle = document.createElement('div');
+            handle.className = 'rotate-handle';
+            el.appendChild(handle);
+
+            World.add(engine.world, body);
+            container.appendChild(el);
+            const ent = { body, el, isBall: false };
+            entities.push(ent);
+
+            bindControls(ent, handle);
+        }
+
+        // Logic for Dragging and Rotating
+        function bindControls(ent, handle) {
+            let dragging = false;
+            let rotating = false;
+
+            ent.el.addEventListener('mousedown', (e) => {
+                if(e.target === handle) rotating = true;
+                else dragging = true;
+                e.stopPropagation();
+            });
+
+            window.addEventListener('mousemove', (e) => {
+                if (dragging) {
+                    Body.setPosition(ent.body, { x: e.clientX, y: e.clientY });
+                }
+                if (rotating) {
+                    const pos = ent.body.position;
+                    // Calculate angle between object center and mouse
+                    const angle = Math.atan2(e.clientY - pos.y, e.clientX - pos.x);
+                    // Offset by 90 degrees because handle is at the bottom
+                    Body.setAngle(ent.body, angle - Math.PI/2);
+                }
+            });
+
+            window.addEventListener('mouseup', () => {
+                dragging = false;
+                rotating = false;
+            });
+        }
+
+        // Drop Ball from Fixed Injector
+        function spawnBall() {
+            const r = 14;
+            // Fixed top-center position
+            const body = Bodies.circle(window.innerWidth/2, 40, r, { 
+                restitution: 0.5,
+                friction: 0.01 
+            });
+
+            const el = document.createElement('div');
+            el.className = 'phys-obj ball';
+            el.style.width = r*2 + 'px';
+            el.style.height = r*2 + 'px';
+            el.style.marginLeft = -r + 'px';
+            el.style.marginTop = -r + 'px';
+
+            World.add(engine.world, body);
+            container.appendChild(el);
+            entities.push({ body, el, isBall: true });
+        }
+
+        function clearBalls() {
+            for(let i = entities.length-1; i >= 0; i--) {
+                if(entities[i].isBall) {
+                    World.remove(engine.world, entities[i].body);
+                    entities[i].el.remove();
+                    entities.splice(i, 1);
+                }
+            }
+        }
+
+        // Create an invisible floor so balls don't fall forever
+        World.add(engine.world, Bodies.rectangle(window.innerWidth/2, window.innerHeight + 50, window.innerWidth, 100, { isStatic: true }));
+
+        // Initial objects
+        addObj('beam');
+    </script>
+</body>
+</html>
