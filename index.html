@@ -1,18 +1,111 @@
-#!/bin/bash
-a=$(date -I)
-mkdir $a
-cp *.$1 $a
-tar cfv $a.tar $a
-rm -r $a
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cool Random Website</title>
+    <style>
+        /* Reset & base */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
 
-if [ "$2" = "log" ];then
-	touch log.txt
-	echo "filetype:$1" >> log.txt
-	echo "files:" >> log.txt
-	ls *.$1 >> log.txt
-	echo -e "\n Time" >> log.txt
-	date +"%H:%M:%S" >> log.txt
-	echo "Files:" >> log.txt
-	ls -1 *.$1 2>/dev/null | wc -l >> log.txt
-	echo "finished succsessful" >> log.txt
-fi
+        body {
+            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+            color: #fff;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            overflow-x: hidden;
+        }
+
+        h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+            background: linear-gradient(90deg, #ff6ec4, #7873f5);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: glow 2s infinite alternate;
+        }
+
+        @keyframes glow {
+            from { text-shadow: 0 0 5px #ff6ec4, 0 0 10px #ff6ec4; }
+            to { text-shadow: 0 0 20px #7873f5, 0 0 40px #7873f5; }
+        }
+
+        p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            text-align: center;
+            max-width: 600px;
+            line-height: 1.5;
+            animation: fadeIn 3s ease forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .button {
+            background: #ff6ec4;
+            border: none;
+            padding: 15px 30px;
+            color: #fff;
+            font-size: 1rem;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 10px #ff6ec4, 0 0 20px #ff6ec4;
+        }
+
+        .button:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 20px #7873f5, 0 0 40px #7873f5;
+            background: #7873f5;
+        }
+
+        /* Floating shapes */
+        .shape {
+            position: absolute;
+            border-radius: 50%;
+            opacity: 0.5;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .shape:nth-child(1) { width: 100px; height: 100px; background: #ff6ec4; top: 10%; left: 5%; animation-duration: 5s; }
+        .shape:nth-child(2) { width: 150px; height: 150px; background: #7873f5; top: 50%; left: 80%; animation-duration: 7s; }
+        .shape:nth-child(3) { width: 80px; height: 80px; background: #ffb347; top: 70%; left: 20%; animation-duration: 6s; }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) translateX(0) rotate(0deg); }
+            50% { transform: translateY(-20px) translateX(10px) rotate(180deg); }
+        }
+
+        footer {
+            position: absolute;
+            bottom: 20px;
+            font-size: 0.9rem;
+            opacity: 0.7;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="shape"></div>
+    <div class="shape"></div>
+    <div class="shape"></div>
+
+    <h1>Random Cool Site</h1>
+    <p>Welcome to a totally random, animated, and colorful website! Feel free to explore, click the button below, or just enjoy the floating shapes.</p>
+    <button class="button" onclick="alert('You clicked the cool button! 🚀')">Click Me!</button>
+
+    <footer>© 2026 Cool Random Website</footer>
+</body>
+</html>
