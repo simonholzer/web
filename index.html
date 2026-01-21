@@ -3,19 +3,16 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Animated Shapes</title>
+<title>Interactive Animated Shapes</title>
 <style>
-    * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-    }
+    * { margin:0; padding:0; box-sizing:border-box; }
 
     body {
         background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
         min-height: 100vh;
         overflow: hidden;
         position: relative;
+        cursor: grab;
     }
 
     .shape {
@@ -24,42 +21,32 @@
         opacity: 0.7;
         mix-blend-mode: screen;
         animation-timing-function: ease-in-out;
+        transition: transform 0.3s ease;
     }
 
-    /* Different shapes */
+    /* Shapes with gradients and initial positions */
     .shape:nth-child(1) {
-        width: 100px;
-        height: 100px;
+        width: 100px; height: 100px;
         background: radial-gradient(circle, #ff6ec4, #ffb347);
-        top: 10%;
-        left: 20%;
+        top: 10%; left: 20%;
         animation: float1 6s infinite alternate, rotate1 10s linear infinite;
     }
-
     .shape:nth-child(2) {
-        width: 150px;
-        height: 150px;
+        width: 150px; height: 150px;
         background: radial-gradient(circle, #7873f5, #4facfe);
-        top: 50%;
-        left: 70%;
+        top: 50%; left: 70%;
         animation: float2 8s infinite alternate, rotate2 12s linear infinite;
     }
-
     .shape:nth-child(3) {
-        width: 80px;
-        height: 80px;
+        width: 80px; height: 80px;
         background: radial-gradient(circle, #ffb347, #ffcc33);
-        top: 70%;
-        left: 30%;
+        top: 70%; left: 30%;
         animation: float3 5s infinite alternate, rotate3 15s linear infinite;
     }
-
     .shape:nth-child(4) {
-        width: 120px;
-        height: 120px;
+        width: 120px; height: 120px;
         background: radial-gradient(circle, #00ffcc, #0077ff);
-        top: 30%;
-        left: 50%;
+        top: 30%; left: 50%;
         animation: float4 7s infinite alternate, rotate4 14s linear infinite;
     }
 
@@ -74,7 +61,6 @@
     @keyframes rotate2 { 0% { transform: rotate(0deg); } 100% { transform: rotate(-360deg); } }
     @keyframes rotate3 { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     @keyframes rotate4 { 0% { transform: rotate(0deg); } 100% { transform: rotate(-360deg); } }
-
 </style>
 </head>
 <body>
@@ -82,5 +68,62 @@
     <div class="shape"></div>
     <div class="shape"></div>
     <div class="shape"></div>
+
+<script>
+    const shapes = document.querySelectorAll('.shape');
+
+    shapes.forEach(shape => {
+        let isDragging = false;
+        let offsetX = 0;
+        let offsetY = 0;
+
+        shape.addEventListener('mousedown', (e) => {
+            isDragging = true;
+            offsetX = e.clientX - shape.offsetLeft;
+            offsetY = e.clientY - shape.offsetTop;
+            shape.style.transition = 'transform 0s';
+        });
+
+        window.addEventListener('mousemove', (e) => {
+            if(isDragging) {
+                const x = e.clientX - offsetX;
+                const y = e.clientY - offsetY;
+                shape.style.transform = `translate(${x}px, ${y}px)`;
+            }
+        });
+
+        window.addEventListener('mouseup', () => {
+            if(isDragging) {
+                isDragging = false;
+                shape.style.transition = 'transform 0.3s ease';
+            }
+        });
+
+        // Touch support
+        shape.addEventListener('touchstart', (e) => {
+            isDragging = true;
+            const touch = e.touches[0];
+            offsetX = touch.clientX - shape.offsetLeft;
+            offsetY = touch.clientY - shape.offsetTop;
+            shape.style.transition = 'transform 0s';
+        });
+
+        window.addEventListener('touchmove', (e) => {
+            if(isDragging) {
+                const touch = e.touches[0];
+                const x = touch.clientX - offsetX;
+                const y = touch.clientY - offsetY;
+                shape.style.transform = `translate(${x}px, ${y}px)`;
+            }
+        });
+
+        window.addEventListener('touchend', () => {
+            if(isDragging) {
+                isDragging = false;
+                shape.style.transition = 'transform 0.3s ease';
+            }
+        });
+    });
+</script>
 </body>
 </html>
