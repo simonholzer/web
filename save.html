@@ -1,0 +1,18 @@
+#!/bin/bash
+a=$(date -I)
+mkdir $a
+cp *.$1 $a
+tar cfv $a.tar $a
+rm -r $a
+
+if [ "$2" = "log" ];then
+	touch log.txt
+	echo "filetype:$1" >> log.txt
+	echo "files:" >> log.txt
+	ls *.$1 >> log.txt
+	echo -e "\n Time" >> log.txt
+	date +"%H:%M:%S" >> log.txt
+	echo "Files:" >> log.txt
+	ls -1 *.$1 2>/dev/null | wc -l >> log.txt
+	echo "finished succsessful" >> log.txt
+fi
