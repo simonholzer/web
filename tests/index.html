@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neon Drag Interface</title>
+    <style>
+        /* --- 1. Reset & Base Styles --- */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none; /* Prevents highlighting text while dragging */
+        }
+
+        body {
+            height: 100vh;
+            width: 100vw;
+            overflow: hidden;
+            background-color: #050505;
+            font-family: 'Segoe UI', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+        }
+
+        /* --- 2. Background Grid & Atmosphere --- */
+        .background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            z-index: -1;
+        }
+
+        /* Ambient Glow in the center */
+        .ambient-light {
+            position: absolute;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(120, 50, 255, 0.15), transparent 70%);
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: -1;
+            animation: pulse 8s infinite alternate;
+        }
+
+        /* --- 3. Draggable Objects --- */
+        .draggable {
+            position: absolute;
+            cursor: grab;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            transition: transform 0.1s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.2s, border-color 0.2s;
+            will-change: transform;
+        }
+
+        /* State: Hover */
+        .draggable:hover {
+            border-color: rgba(255, 255, 255, 0.3);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.6);
+            z-index: 100; /* Pop slightly above others */
+        }
+
+        /* State: Active (Being Dragged) */
+        .draggable.active {
+            cursor: grabbing;
+            transform: scale(1.05);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8), 0 0 20px var(--glow-color);
+            border-color: var(--glow-color);
+            z-index: 1000 !important;
+        }
+
+        /* Unique Item Styles */
+        .card {
+            width: 200px;
+            height: 280px;
+            border-radius: 20px;
+            background: linear-gradient(145deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.01));
+            --glow-color: rgba(0, 255, 255, 0.6);
+        }
+
+        .circle {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background: linear-gradient(145deg, rgba(255, 100, 255, 0.1), rgba(255, 100, 255, 0.01));
+            --glow-color: rgba(255, 0, 255, 0.6);
+        }
+
+        .pill {
+            width: 250px;
+            height: 100px;
+            border-radius: 50px;
+            background: linear-gradient(145deg, rgba(255, 200, 0, 0.1), rgba(255, 200, 0, 0.01));
+            --glow-color: rgba(255, 200, 0, 0.6);
+        }
+
+        /* Text Styling inside items */
+        h3 { font-weight: 600; letter-spacing: 1px; margin-bottom: 5px; opacity: 0.9; }
+        p { font-size: 0.8rem; opacity: 0.6; }
+
+        /* --- 4. Animations --- */
+        @keyframes pulse {
+            0% { opacity: 0.5; transform: translate(-50%, -50%) scale(1); }
+            100% { opacity: 0.8; transform: translate(-50%, -50%) scale(1.2); }
+        }
+
+        /* Initial Floating Animation (paused when dragging) */
+        @keyframes float {
+            0% { margin-top: 0px; }
+            50% { margin-top: -15px; }
+            100% { margin-top: 0px; }
+        }
+
+        .draggable .content {
+            animation: float 6s ease-in-out infinite;
+            pointer-events: none; /* Clicks pass through to the parent */
+            text-align: center;
+        }
+
+        .draggable.active .content {
+            animation-play-state: paused;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="background"></div>
+    <div class="ambient-light"></div>
+
+    <div class="draggable card" style="top: 20%; left: 20%;">
+        <div class="content">
+            <h3>CYBER</h3>
+            <p>Drag me around</p>
+        </div>
+    </div>
+
+    <div class="draggable circle" style="top: 50%; left: 60%;">
+        <div class="content">
+            <h3>ORB</h3>
+            <p>I glow</p>
+        </div>
+    </div>
+
+    <div class="draggable pill" style="top: 70%; left: 30%;">
+        <div class="content">
+            <h3>DATA</h3>
+            <p>Smooth Physics</p>
+        </div>
+    </div>
+
+    <script>
+        // --- JavaScript Logic ---
+
+        const draggables = document.querySelectorAll('.draggable');
+        let activeItem = null;
+        let initialX, initialY;
+        let currentX, currentY;
+        let xOffset = 0, yOffset = 0;
+
+        draggables.forEach(item => {
+            // Mouse Events
+            item.addEventListener('mousedown', dragStart);
+            
+            // Touch Events (Mobile)
+            item.addEventListener('touchstart', dragStart);
+        });
+
+        // Add global listeners to body so dragging doesn't break if you move mouse fast
+        document.body.addEventListener('mouseup', dragEnd);
+        document.body.addEventListener('touchend', dragEnd);
+        document.body.addEventListener('mousemove', drag);
+        document.body.addEventListener('touchmove', drag);
+
+        function dragStart(e) {
+            if (e.type === "touchstart") {
+                initialX = e.touches[0].clientX - xOffset;
+                initialY = e.touches[0].clientY - yOffset;
+            } else {
+                initialX = e.clientX - xOffset;
+                initialY = e.clientY - yOffset;
+            }
+
+            activeItem = e.currentTarget;
+            
+            // Get current transform values if they exist
+            // This logic is simplified; for a robust app, we would parse the matrix
+            // But here we reset offsets based on the element's current computed style position
+            // To make "pickup and drop" work seamlessly, we calculate the offset relative to the element rect
+            
+            const rect = activeItem.getBoundingClientRect();
+            
+            if (e.type === "touchstart") {
+               xOffset = e.touches[0].clientX - rect.left;
+               yOffset = e.touches[0].clientY - rect.top;
+            } else {
+               xOffset = e.clientX - rect.left;
+               yOffset = e.clientY - rect.top;
+            }
+            
+            activeItem.classList.add('active');
+        }
+
+        function dragEnd(e) {
+            if (activeItem) {
+                activeItem.classList.remove('active');
+                activeItem = null;
+            }
+        }
+
+        function drag(e) {
+            if (activeItem) {
+                e.preventDefault();
+                
+                let clientX, clientY;
+
+                if (e.type === "touchmove") {
+                    clientX = e.touches[0].clientX;
+                    clientY = e.touches[0].clientY;
+                } else {
+                    clientX = e.clientX;
+                    clientY = e.clientY;
+                }
+
+                // Calculate new position
+                const newX = clientX - xOffset;
+                const newY = clientY - yOffset;
+
+                // Apply new position
+                activeItem.style.left = `${newX}px`;
+                activeItem.style.top = `${newY}px`;
+            }
+        }
+    </script>
+</body>
+</html>
