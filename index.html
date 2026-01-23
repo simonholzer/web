@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Der legendäre Rothirsch</title>
+
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -14,7 +15,6 @@
       min-height: 100vh;
     }
 
-    /* subtle grid */
     body::before {
       content: "";
       position: fixed;
@@ -26,7 +26,6 @@
       z-index: -2;
     }
 
-    /* ambient accent */
     body::after {
       content: "";
       position: fixed;
@@ -59,6 +58,7 @@
       margin-bottom: 3.5rem;
     }
 
+    /* IMAGE HOVER EFFECT */
     .images img {
       width: 100%;
       border-radius: 1.2rem;
@@ -67,6 +67,19 @@
       box-shadow:
         0 0 0 1px rgba(255,255,255,0.08),
         0 20px 40px rgba(0,0,0,0.6);
+      transition:
+        transform 0.4s ease,
+        box-shadow 0.4s ease,
+        filter 0.4s ease;
+      cursor: pointer;
+    }
+
+    .images img:hover {
+      transform: scale(1.05) translateY(-6px);
+      filter: brightness(1.1);
+      box-shadow:
+        0 0 0 1px rgba(180,160,255,0.5),
+        0 30px 60px rgba(0,0,0,0.8);
     }
 
     section {
@@ -94,6 +107,27 @@
       font-size: 0.8rem;
       opacity: 0.5;
     }
+
+    /* BOTTOM-LEFT LOGO */
+    .corner-link {
+      position: fixed;
+      bottom: 12px;
+      left: 12px;
+      z-index: 10;
+      opacity: 0.6;
+      transition: opacity 0.3s ease, transform 0.3s ease;
+    }
+
+    .corner-link img {
+      width: 42px;
+      height: auto;
+      display: block;
+    }
+
+    .corner-link:hover {
+      opacity: 1;
+      transform: scale(1.1);
+    }
   </style>
 </head>
 <body>
@@ -102,9 +136,9 @@
     <h1>Der legendäre Rothirsch</h1>
 
     <div class="images">
-      <img src="rothirsch1.jpg" alt="Der legendäre Rothirsch im Nebel" />
-      <img src="rothirsch2.jpg" alt="Rothirsch bei Vollmond" />
-      <img src="rothirsch3.jpg" alt="Der Wächter des Waldes" />
+      <img src="rothirsch1.jpg" alt="Der legendäre Rothirsch im Nebel">
+      <img src="rothirsch2.jpg" alt="Rothirsch bei Vollmond">
+      <img src="rothirsch3.jpg" alt="Der Wächter des Waldes">
     </div>
   </header>
 
@@ -126,6 +160,11 @@
   <footer>
     © Der Rothirsch
   </footer>
+
+  <!-- Bottom-left redirect image -->
+  <a href="https://erepfl.com" class="corner-link" target="_blank" rel="noopener">
+    <img src="erepfl.png" alt="erepfl">
+  </a>
 
 </body>
 </html>

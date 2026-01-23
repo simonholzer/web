@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Der legendäre Rothirsch</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      background: #0b0b0d;
+      color: #f2f2f2;
+      min-height: 100vh;
+    }
+
+    /* subtle grid */
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+      background-size: 60px 60px;
+      z-index: -2;
+    }
+
+    /* ambient accent */
+    body::after {
+      content: "";
+      position: fixed;
+      width: 500px;
+      height: 500px;
+      background: radial-gradient(circle, rgba(120,80,255,0.18), transparent 70%);
+      top: 20%;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: -1;
+    }
+
+    header {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 3rem 1.5rem 2rem;
+    }
+
+    h1 {
+      font-size: clamp(2.4rem, 5vw, 3.6rem);
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      margin-bottom: 2rem;
+    }
+
+    .images {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 3.5rem;
+    }
+
+    .images img {
+      width: 100%;
+      border-radius: 1.2rem;
+      object-fit: cover;
+      background: #111;
+      box-shadow:
+        0 0 0 1px rgba(255,255,255,0.08),
+        0 20px 40px rgba(0,0,0,0.6);
+    }
+
+    section {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 0 1.5rem 4rem;
+    }
+
+    h2 {
+      font-size: 1.5rem;
+      font-weight: 500;
+      margin-bottom: 0.75rem;
+      color: #cfcbff;
+    }
+
+    p {
+      line-height: 1.7;
+      opacity: 0.85;
+      margin-bottom: 2.8rem;
+    }
+
+    footer {
+      text-align: center;
+      padding: 2rem 1rem;
+      font-size: 0.8rem;
+      opacity: 0.5;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Der legendäre Rothirsch</h1>
+
+    <div class="images">
+      <img src="rothirsch1.jpg" alt="Der legendäre Rothirsch im Nebel" />
+      <img src="rothirsch2.jpg" alt="Rothirsch bei Vollmond" />
+      <img src="rothirsch3.jpg" alt="Der Wächter des Waldes" />
+    </div>
+  </header>
+
+  <section>
+    <h2>Die Legende</h2>
+    <p>
+      Tief in den Nebelwäldern lebt er – oder lebte er vielleicht nur in unseren Geschichten?
+      Der legendäre Rothirsch soll Hörner getragen haben, so groß wie Bäume,
+      und ein Brüllen, das den Boden erzittern ließ.
+    </p>
+
+    <h2>Mythos oder Wahrheit?</h2>
+    <p>
+      Manche sagen, er sei nur eine Geschichte. Andere schwören, sie hätten ihn gesehen.
+      Sicher ist nur eines: Wer einmal von ihm gehört hat, vergisst ihn nie.
+    </p>
+  </section>
+
+  <footer>
+    © Der Rothirsch
+  </footer>
+
+</body>
+</html>
