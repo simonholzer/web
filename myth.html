@@ -22,22 +22,50 @@
     }
     body::after {
       content: ""; position: fixed; width: 500px; height: 500px;
-      background: radial-gradient(circle, rgba(255, 80, 80, 0.15), transparent 70%); /* Roterer Schimmer für Mythos */
+      background: radial-gradient(circle, rgba(255, 80, 80, 0.15), transparent 70%); 
       top: 30%; left: 50%; transform: translateX(-50%); z-index: -1;
     }
 
-    /* Navigation Button */
-    .nav-bar { padding: 2rem 1.5rem; max-width: 800px; margin: 0 auto; }
-    .btn-back {
-      color: #cfcbff; text-decoration: none; font-weight: 600; font-size: 0.9rem;
-      border: 1px solid rgba(207, 203, 255, 0.3); padding: 0.5rem 1rem; border-radius: 2rem;
-      transition: all 0.3s ease;
+    /* HEADER LAYOUT - Gleich wie im Hub */
+    header { 
+      max-width: 800px; 
+      margin: 0 auto; 
+      padding: 3rem 1.5rem 2rem; 
     }
-    .btn-back:hover { background: rgba(207, 203, 255, 0.1); border-color: #cfcbff; }
 
-    header { max-width: 800px; margin: 0 auto; padding: 1rem 1.5rem 3rem; }
-    h1 { font-size: clamp(2rem, 4vw, 3rem); font-weight: 600; margin-bottom: 1rem; color: #fff; }
-    
+    .header-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+    }
+
+    h1 { 
+      font-size: clamp(1.8rem, 4vw, 3rem); 
+      font-weight: 600; 
+      color: #fff; 
+      margin-bottom: 0; 
+    }
+
+    /* BUTTON LOOK - Angepasst an den Hub-Stil */
+    .btn-back {
+      color: #cfcbff; 
+      text-decoration: none; 
+      font-weight: 600; 
+      font-size: 0.9rem;
+      border: 1px solid rgba(207, 203, 255, 0.3); 
+      padding: 0.6rem 1.5rem; 
+      border-radius: 30px;
+      background: rgba(255, 255, 255, 0.05);
+      transition: all 0.3s ease;
+      white-space: nowrap;
+    }
+    .btn-back:hover { 
+      background: rgba(207, 203, 255, 0.15); 
+      border-color: #cfcbff; 
+      transform: translateY(-2px);
+    }
+
     article { max-width: 700px; margin: 0 auto; padding: 0 1.5rem 4rem; }
     h2 { color: #cfcbff; margin-top: 2.5rem; margin-bottom: 1rem; font-size: 1.4rem; }
     p { margin-bottom: 1.5rem; opacity: 0.9; text-align: justify; }
@@ -52,12 +80,11 @@
 </head>
 <body>
 
-  <nav class="nav-bar">
-    <a href="index.html" class="btn-back">← Zurück zur Übersicht</a>
-  </nav>
-
   <header>
-    <h1>Die Ursprünge des Wächters</h1>
+    <div class="header-top">
+      <h1>Die Ursprünge</h1>
+      <a href="index.html" class="btn-back">Zurück</a>
+    </div>
   </header>
 
   <article>

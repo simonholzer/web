@@ -26,29 +26,45 @@
       z-index: -2;
     }
 
-    body::after {
-      content: "";
-      position: fixed;
-      width: 500px;
-      height: 500px;
-      background: radial-gradient(circle, rgba(120,80,255,0.18), transparent 70%);
-      top: 20%;
-      left: 50%;
-      transform: translateX(-50%);
-      z-index: -1;
-    }
-
     header {
       max-width: 1000px;
       margin: 0 auto;
       padding: 3rem 1.5rem 2rem;
     }
 
+    /* --- FLEXBOX FÜR DIE ÜBERSCHRIFT-ZEILE --- */
+    .header-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center; /* Vertikale Zentrierung zur Überschrift */
+      margin-bottom: 2rem;
+    }
+
     h1 {
-      font-size: clamp(2.4rem, 5vw, 3.6rem);
+      font-size: clamp(1.8rem, 5vw, 3.6rem);
       font-weight: 600;
       letter-spacing: 0.05em;
-      margin-bottom: 2rem;
+      margin-bottom: 0; /* Margin entfernt, da Container das regelt */
+    }
+
+    /* --- DER NEUE BUTTON STIL --- */
+    .btn-back {
+      color: #cfcbff;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.9rem;
+      border: 1px solid rgba(207, 203, 255, 0.3);
+      padding: 0.6rem 1.5rem;
+      border-radius: 30px;
+      background: rgba(255, 255, 255, 0.05);
+      transition: all 0.3s ease;
+      white-space: nowrap; /* Verhindert Zeilenumbruch im Button */
+    }
+
+    .btn-back:hover {
+      background: rgba(207, 203, 255, 0.15);
+      border-color: #cfcbff;
+      transform: translateY(-2px);
     }
 
     .cards {
@@ -63,21 +79,13 @@
       overflow: hidden;
       cursor: pointer;
       background: #111;
-      box-shadow:
-        0 0 0 1px rgba(255,255,255,0.08),
-        0 20px 40px rgba(0,0,0,0.6);
-      transition:
-        transform 0.4s ease,
-        box-shadow 0.4s ease,
-        filter 0.4s ease;
+      box-shadow: 0 0 0 1px rgba(255,255,255,0.08), 0 20px 40px rgba(0,0,0,0.6);
+      transition: transform 0.4s ease, box-shadow 0.4s ease;
     }
 
     .card:hover {
       transform: scale(1.05) translateY(-6px);
-      filter: brightness(1.1);
-      box-shadow:
-        0 0 0 1px rgba(180,160,255,0.5),
-        0 30px 60px rgba(0,0,0,0.8);
+      box-shadow: 0 0 0 1px rgba(180,160,255,0.5), 0 30px 60px rgba(0,0,0,0.8);
     }
 
     .card img {
@@ -92,9 +100,8 @@
       bottom: 0;
       width: 100%;
       padding: 14px;
-      background: linear-gradient(transparent, rgba(0,0,0,0.7));
+      background: linear-gradient(transparent, rgba(0,0,0,0.8));
       font-size: 1.1rem;
-      letter-spacing: 0.04em;
     }
 
     footer {
@@ -110,24 +117,19 @@
       left: 12px;
       z-index: 10;
       opacity: 0.6;
-      transition: opacity 0.3s ease, transform 0.3s ease;
     }
 
-    .corner-link img {
-      width: 42px;
-      display: block;
-    }
-
-    .corner-link:hover {
-      opacity: 1;
-      transform: scale(1.1);
-    }
+    .corner-link img { width: 42px; display: block; }
   </style>
 </head>
 <body>
 
 <header>
-  <h1>Rothirsch Services</h1>
+  <div class="header-top">
+    <h1>Rothirsch Services</h1>
+    <a href="index.html" class="btn-back">Zurück</a>
+  </div>
+  
   <div class="cards" id="cards"></div>
 </header>
 
@@ -140,7 +142,6 @@
 </a>
 
 <script>
-  // 🔧 ERWEITERBAR – gemini (Nr. 4) bewusst NICHT drin
   const services = [
     { name: "Bluemap", url: "https://bluemap.rothirsch.net", img: "images/bluemap.jpg" },
     { name: "AMP", url: "https://amp.rothirsch.net", img: "images/amp.jpg" },
@@ -155,12 +156,10 @@
     const card = document.createElement("div");
     card.className = "card";
     card.onclick = () => window.location.href = s.url;
-
     card.innerHTML = `
       <img src="${s.img}" alt="${s.name}">
       <span>${s.name}</span>
     `;
-
     container.appendChild(card);
   });
 </script>
