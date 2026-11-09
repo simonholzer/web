@@ -1,185 +1,121 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Der legendäre 2Rothirsch</title>
-
-  <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-
-    body {
-      font-family: 'Segoe UI', system-ui, sans-serif;
-      background: #0b0b0d;
-      color: #f2f2f2;
-      min-height: 100vh;
-    }
-
-    body::before {
-      content: "";
-      position: fixed;
-      inset: 0;
-      background-image:
-        linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
-      background-size: 60px 60px;
-      z-index: -2;
-    }
-
-    body::after {
-      content: "";
-      position: fixed;
-      width: 500px;
-      height: 500px;
-      background: radial-gradient(circle, rgba(120,80,255,0.18), transparent 70%);
-      top: 20%;
-      left: 50%;
-      transform: translateX(-50%);
-      z-index: -1;
-    }
-
-    header {
-      max-width: 1000px;
-      margin: 0 auto;
-      padding: 3rem 1.5rem 2rem;
-    }
-
-    h1 {
-      font-size: clamp(2.4rem, 5vw, 3.6rem);
-      font-weight: 600;
-      letter-spacing: 0.05em;
-      margin-bottom: 2rem;
-    }
-
-    .images {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 1.5rem;
-      margin-bottom: 3.5rem;
-    }
-
-    /* Helper to ensure the link acts as a block container */
-    .images a {
-      display: block;
-      text-decoration: none;
-    }
-
-    /* IMAGE HOVER EFFECT */
-    .images img {
-      width: 100%;
-      height: 100%; /* Ensures it fills the anchor */
-      border-radius: 1.2rem;
-      object-fit: cover;
-      background: #111;
-      box-shadow:
-        0 0 0 1px rgba(255,255,255,0.08),
-        0 20px 40px rgba(0,0,0,0.6);
-      transition:
-        transform 0.4s ease,
-        box-shadow 0.4s ease,
-        filter 0.4s ease;
-      cursor: pointer;
-      display: block; /* Removes bottom spacing in anchor */
-    }
-
-    .images img:hover {
-      transform: scale(1.05) translateY(-6px);
-      filter: brightness(1.1);
-      box-shadow:
-        0 0 0 1px rgba(180,160,255,0.5),
-        0 30px 60px rgba(0,0,0,0.8);
-    }
-
-    section {
-      max-width: 720px;
-      margin: 0 auto;
-      padding: 0 1.5rem 4rem;
-    }
-
-    h2 {
-      font-size: 1.5rem;
-      font-weight: 500;
-      margin-bottom: 0.75rem;
-      color: #cfcbff;
-    }
-
-    p {
-      line-height: 1.7;
-      opacity: 0.85;
-      margin-bottom: 2.8rem;
-    }
-
-    footer {
-      text-align: center;
-      padding: 2rem 1rem;
-      font-size: 0.8rem;
-      opacity: 0.5;
-    }
-
-    /* BOTTOM-LEFT LOGO */
-    .corner-link {
-      position: fixed;
-      bottom: 12px;
-      left: 12px;
-      z-index: 10;
-      opacity: 0.6;
-      transition: opacity 0.3s ease, transform 0.3s ease;
-    }
-
-    .corner-link img {
-      width: 42px;
-      height: auto;
-      display: block;
-    }
-
-    .corner-link:hover {
-      opacity: 1;
-      transform: scale(1.1);
-    }
-  </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Der legendäre Rothirsch</title>
+  <meta name="description" content="Tief in den Nebelwäldern lebt er – oder nur in unseren Geschichten? Die Legende, Sichtungen und der Mythos des legendären Rothirschs.">
+  <meta name="theme-color" content="#0c0e0b">
+  <link rel="canonical" href="https://www.rothirsch.net/">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Der legendäre Rothirsch">
+  <meta property="og:description" content="Die Legende, Sichtungen und der Mythos des legendären Rothirschs.">
+  <meta property="og:url" content="https://www.rothirsch.net/">
+  <meta property="og:image" content="https://www.rothirsch.net/images/opt/og.jpg">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" href="favicon.png" type="image/png">
+  <link rel="apple-touch-icon" href="images/opt/apple-touch-icon.png">
+  <link rel="preload" as="image" type="image/webp" fetchpriority="high"
+        imagesrcset="images/opt/rothirsch1-480.webp 480w, images/opt/rothirsch1-960.webp 960w, images/opt/rothirsch1-1600.webp 1600w" imagesizes="100vw">
+  <link rel="stylesheet" href="style.css">
+  <script>document.documentElement.classList.add('js')</script>
+  <script src="site.js" defer></script>
 </head>
 <body>
+  <a class="skip" href="#main">Zum Inhalt springen</a>
 
-  <header>
-    <h1>Der legendäre Rothirsch</h1>
-
-    <div class="images">
-      <a href="hub.html">
-        <img src="images/rothirsch1.jpg" alt="Der legendäre Rothirsch im Nebel">
-      </a>
-      
-      <a href="gallery.html">
-        <img src="images/rothirsch2.jpg" alt="Rothirsch bei Vollmond">
-      </a>
-      
-      <a href="myth.html">
-        <img src="images/rothirsch3.jpg" alt="Der Wächter des Waldes">
-      </a>
+  <header class="site-header">
+    <div class="wrap">
+      <a class="brand" href="index.html"><img src="images/opt/favicon-32.png" width="28" height="28" alt="">Rothirsch</a>
+      <nav class="nav" aria-label="Hauptnavigation">
+        <a href="index.html" aria-current="page">Start</a>
+        <a href="gallery.html">Galerie</a>
+        <a href="myth.html">Mythos</a>
+        <a href="hub.html">Links</a>
+      </nav>
     </div>
   </header>
 
-  <section>
-    <h2>Die Legende</h2>
-    <p>
-      Tief in den Nebelwäldern lebt er – oder lebte er vielleicht nur in unseren Geschichten?
-      Der legendäre Rothirsch soll Hörner getragen haben, so groß wie Bäume,
-      und ein Brüllen, das den Boden erzittern ließ.
-    </p>
+  <main id="main">
+    <section class="hero">
+      <div class="hero-bg">
+        <img src="images/opt/rothirsch1-1600.webp"
+             srcset="images/opt/rothirsch1-480.webp 480w, images/opt/rothirsch1-960.webp 960w, images/opt/rothirsch1-1600.webp 1600w"
+             sizes="100vw" width="1600" height="1600" fetchpriority="high" decoding="async"
+             alt="Der goldene Rothirsch auf einer Bergwiese bei Sonnenuntergang">
+      </div>
+      <div class="wrap">
+        <div class="hero-content">
+          <span class="eyebrow">Ein Mythos aus den Nebelwäldern</span>
+          <h1>Der legendäre <em>Rothirsch</em></h1>
+          <p class="lead">Hörner so groß wie Bäume, ein Brüllen, das den Boden erzittern lässt – wer einmal von ihm gehört hat, vergisst ihn nie.</p>
+          <div class="actions">
+            <a class="btn btn-primary" href="myth.html">Den Mythos lesen <span aria-hidden="true">→</span></a>
+            <a class="btn btn-ghost" href="gallery.html">Zu den Sichtungen</a>
+          </div>
+        </div>
+      </div>
+    </section>
 
-    <h2>Mythos oder Wahrheit?</h2>
-    <p>
-      Manche sagen, er sei nur eine Geschichte. Andere schwören, sie hätten ihn gesehen.
-      Sicher ist nur eines: Wer einmal von ihm gehört hat, vergisst ihn nie.
-    </p>
-  </section>
+    <section class="section" aria-labelledby="explore">
+      <div class="wrap">
+        <div class="section-head reveal">
+          <h2 id="explore">Entdecken</h2>
+          <p>Folge seinen Spuren – durch Bilder, alte Geschichten und die Orte des Rothirsch-Netzwerks.</p>
+        </div>
+        <div class="tiles">
+          <a class="tile reveal" href="gallery.html">
+            <img src="images/opt/rothirsch5-480.webp" srcset="images/opt/rothirsch5-480.webp 480w, images/opt/rothirsch5-960.webp 960w"
+                 sizes="(max-width: 600px) 100vw, 380px" width="480" height="720" loading="lazy" decoding="async"
+                 alt="Rothirsch im herbstlichen Wald">
+            <div class="tile-body"><h3>Galerie<span class="arrow" aria-hidden="true">→</span></h3><p>Sichtungen aus aller Welt</p></div>
+          </a>
+          <a class="tile reveal" href="myth.html">
+            <img src="images/opt/rothirsch3-480.webp" srcset="images/opt/rothirsch3-480.webp 480w, images/opt/rothirsch3-960.webp 960w"
+                 sizes="(max-width: 600px) 100vw, 380px" width="480" height="480" loading="lazy" decoding="async"
+                 alt="Der Wächter des Waldes im Abendlicht">
+            <div class="tile-body"><h3>Mythos<span class="arrow" aria-hidden="true">→</span></h3><p>Die Ursprünge der Legende</p></div>
+          </a>
+          <a class="tile reveal" href="hub.html">
+            <img src="images/opt/rothirsch2-480.webp" srcset="images/opt/rothirsch2-480.webp 480w, images/opt/rothirsch2-960.webp 703w"
+                 sizes="(max-width: 600px) 100vw, 380px" width="480" height="481" loading="lazy" decoding="async"
+                 alt="Rothirsch zwischen hohen Bäumen">
+            <div class="tile-body"><h3>Links<span class="arrow" aria-hidden="true">→</span></h3><p>Das Rothirsch-Netzwerk</p></div>
+          </a>
+        </div>
+      </div>
+    </section>
 
-  <footer>
-    © Der Rothirsch
+    <section class="section" aria-labelledby="legende">
+      <div class="wrap split">
+        <figure class="reveal">
+          <img src="images/opt/rothirsch4-480.webp" srcset="images/opt/rothirsch4-480.webp 480w, images/opt/rothirsch4-960.webp 960w"
+               sizes="(max-width: 700px) 100vw, 560px" width="480" height="720" loading="lazy" decoding="async"
+               alt="Röhrender Rothirsch im goldenen Morgenlicht">
+        </figure>
+        <div class="prose reveal">
+          <h2 id="legende">Die Legende</h2>
+          <p>Tief in den Nebelwäldern lebt er – oder lebte er vielleicht nur in unseren Geschichten? Der legendäre Rothirsch soll Hörner getragen haben, so groß wie Bäume, und ein Brüllen, das den Boden erzittern ließ.</p>
+          <h2>Mythos oder Wahrheit?</h2>
+          <p>Manche sagen, er sei nur eine Geschichte. Andere schwören, sie hätten ihn gesehen. Sicher ist nur eines: Wer einmal von ihm gehört hat, vergisst ihn nie.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <span>© Der Rothirsch</span>
+      <nav aria-label="Fußzeile">
+        <a href="gallery.html">Galerie</a>
+        <a href="myth.html">Mythos</a>
+        <a href="hub.html">Links</a>
+      </nav>
+    </div>
   </footer>
 
-  <a href="https://erepfl.com" class="corner-link" target="_blank" rel="noopener">
-    <img src="images/erepfl.png" alt="erepfl">
+  <a href="https://erepfl.com" class="corner-link" target="_blank" rel="noopener" aria-label="erepfl.com">
+    <img src="images/opt/erepfl-96.webp" width="42" height="42" alt="">
   </a>
-
 </body>
 </html>

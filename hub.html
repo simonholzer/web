@@ -1,167 +1,71 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Rothirsch Links</title>
-
-  <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-
-    body {
-      font-family: 'Segoe UI', system-ui, sans-serif;
-      background: #0b0b0d;
-      color: #f2f2f2;
-      min-height: 100vh;
-    }
-
-    body::before {
-      content: "";
-      position: fixed;
-      inset: 0;
-      background-image:
-        linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
-      background-size: 60px 60px;
-      z-index: -2;
-    }
-
-    header {
-      max-width: 1000px;
-      margin: 0 auto;
-      padding: 3rem 1.5rem 2rem;
-    }
-
-    /* --- FLEXBOX FÜR DIE ÜBERSCHRIFT-ZEILE --- */
-    .header-top {
-      display: flex;
-      justify-content: space-between;
-      align-items: center; /* Vertikale Zentrierung zur Überschrift */
-      margin-bottom: 2rem;
-    }
-
-    h1 {
-      font-size: clamp(1.8rem, 5vw, 3.6rem);
-      font-weight: 600;
-      letter-spacing: 0.05em;
-      margin-bottom: 0; /* Margin entfernt, da Container das regelt */
-    }
-
-    /* --- DER NEUE BUTTON STIL --- */
-    .btn-back {
-      color: #cfcbff;
-      text-decoration: none;
-      font-weight: 600;
-      font-size: 0.9rem;
-      border: 1px solid rgba(207, 203, 255, 0.3);
-      padding: 0.6rem 1.5rem;
-      border-radius: 30px;
-      background: rgba(255, 255, 255, 0.05);
-      transition: all 0.3s ease;
-      white-space: nowrap; /* Verhindert Zeilenumbruch im Button */
-    }
-
-    .btn-back:hover {
-      background: rgba(207, 203, 255, 0.15);
-      border-color: #cfcbff;
-      transform: translateY(-2px);
-    }
-
-    .cards {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 1.5rem;
-    }
-
-    .card {
-      position: relative;
-      border-radius: 1.2rem;
-      overflow: hidden;
-      cursor: pointer;
-      background: #111;
-      box-shadow: 0 0 0 1px rgba(255,255,255,0.08), 0 20px 40px rgba(0,0,0,0.6);
-      transition: transform 0.4s ease, box-shadow 0.4s ease;
-    }
-
-    .card:hover {
-      transform: scale(1.05) translateY(-6px);
-      box-shadow: 0 0 0 1px rgba(180,160,255,0.5), 0 30px 60px rgba(0,0,0,0.8);
-    }
-
-    .card img {
-      width: 100%;
-      height: 220px;
-      object-fit: cover;
-      display: block;
-    }
-
-    .card span {
-      position: absolute;
-      bottom: 0;
-      width: 100%;
-      padding: 14px;
-      background: linear-gradient(transparent, rgba(0,0,0,0.8));
-      font-size: 1.1rem;
-    }
-
-    footer {
-      text-align: center;
-      padding: 2rem 1rem;
-      font-size: 0.8rem;
-      opacity: 0.5;
-    }
-
-    .corner-link {
-      position: fixed;
-      bottom: 12px;
-      left: 12px;
-      z-index: 10;
-      opacity: 0.6;
-    }
-
-    .corner-link img { width: 42px; display: block; }
-  </style>
+  <meta name="description" content="Das Rothirsch-Netzwerk: Bluemap, Alarm, Erepfl und JJ Game Studio.">
+  <meta name="theme-color" content="#0c0e0b">
+  <link rel="canonical" href="https://www.rothirsch.net/hub.html">
+  <link rel="icon" href="favicon.png" type="image/png">
+  <link rel="apple-touch-icon" href="images/opt/apple-touch-icon.png">
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
+  <a class="skip" href="#main">Zum Inhalt springen</a>
 
-<header>
-  <div class="header-top">
-    <h1>Rothirsch Links</h1>
-    <a href="index.html" class="btn-back">Zurück</a>
-  </div>
-  
-  <div class="cards" id="cards"></div>
-</header>
+  <header class="site-header">
+    <div class="wrap">
+      <a class="brand" href="index.html"><img src="images/opt/favicon-32.png" width="28" height="28" alt="">Rothirsch</a>
+      <nav class="nav" aria-label="Hauptnavigation">
+        <a href="index.html">Start</a>
+        <a href="gallery.html">Galerie</a>
+        <a href="myth.html">Mythos</a>
+        <a href="hub.html" aria-current="page">Links</a>
+      </nav>
+    </div>
+  </header>
 
-<footer>
-  © Rothirsch Network
-</footer>
+  <main id="main" class="wrap">
+    <div class="page-head">
+      <span class="eyebrow">Rothirsch Network</span>
+      <h1>Links</h1>
+      <p>Dienste und Projekte rund um den Rothirsch.</p>
+    </div>
 
-<a href="https://erepfl.com" class="corner-link" target="_blank" rel="noopener">
-  <img src="images/erepfl.png" alt="erepfl">
-</a>
+    <div class="links">
+      <a class="link-card" href="https://bluemap.rothirsch.net">
+        <div class="icon pixel"><img src="images/opt/bluemap.webp" width="480" height="480" alt=""></div>
+        <div class="meta"><div><h2>Bluemap</h2><small>bluemap.rothirsch.net</small></div><span class="ext" aria-hidden="true">↗</span></div>
+      </a>
+      <a class="link-card" href="https://alarm.rothirsch.net">
+        <div class="icon"><img src="images/opt/alarm.webp" width="480" height="422" alt=""></div>
+        <div class="meta"><div><h2>Alarm</h2><small>alarm.rothirsch.net</small></div><span class="ext" aria-hidden="true">↗</span></div>
+      </a>
+      <a class="link-card" href="https://erepfl.com">
+        <div class="icon"><img src="images/opt/erepfl.webp" width="480" height="460" alt=""></div>
+        <div class="meta"><div><h2>Erepfl</h2><small>erepfl.com</small></div><span class="ext" aria-hidden="true">↗</span></div>
+      </a>
+      <a class="link-card" href="https://julianjesacher.org">
+        <div class="icon light"><img src="images/opt/julian.webp" width="480" height="402" alt=""></div>
+        <div class="meta"><div><h2>JJ Game Studio</h2><small>julianjesacher.org</small></div><span class="ext" aria-hidden="true">↗</span></div>
+      </a>
+    </div>
+  </main>
 
-<script>
-  const services = [
-    { name: "Bluemap", url: "https://bluemap.rothirsch.net", img: "images/bluemap.jpg" },
-    { name: "Alarm", url: "https://alarm.rothirsch.net", img: "images/alarm.png" },
-    { name: "Erepfl", url: "https://erepfl.com", img: "images/erepfl.png" },
-    { name: "JJ Game Studio", url: "https://julianjesacher.org", img: "images/julian.jpg" }
-  ];
+  <footer class="site-footer">
+    <div class="wrap">
+      <span>© Rothirsch Network</span>
+      <nav aria-label="Fußzeile">
+        <a href="index.html">Start</a>
+        <a href="gallery.html">Galerie</a>
+        <a href="myth.html">Mythos</a>
+      </nav>
+    </div>
+  </footer>
 
-  const container = document.getElementById("cards");
-
-  services.forEach(s => {
-    const card = document.createElement("div");
-    card.className = "card";
-    card.onclick = () => window.location.href = s.url;
-    card.innerHTML = `
-      <img src="${s.img}" alt="${s.name}">
-      <span>${s.name}</span>
-    `;
-    container.appendChild(card);
-  });
-</script>
-
+  <a href="https://erepfl.com" class="corner-link" target="_blank" rel="noopener" aria-label="erepfl.com">
+    <img src="images/opt/erepfl-96.webp" width="42" height="40" alt="">
+  </a>
 </body>
 </html>

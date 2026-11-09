@@ -1,103 +1,84 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Galerie der Wildnis</title>
-
-  <style>
-    /* Basis Design */
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body {
-      font-family: 'Segoe UI', system-ui, sans-serif;
-      background: #0b0b0d;
-      color: #f2f2f2;
-      min-height: 100vh;
-    }
-    body::before {
-      content: ""; position: fixed; inset: 0;
-      background-image: linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
-      background-size: 60px 60px; z-index: -2;
-    }
-    body::after {
-      content: ""; position: fixed; width: 600px; height: 600px;
-      background: radial-gradient(circle, rgba(80, 255, 150, 0.12), transparent 70%); /* Grüner Schimmer für Natur */
-      top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: -1;
-    }
-
-    /* Header & Nav */
-    .header-container { max-width: 1200px; margin: 0 auto; padding: 2rem 1.5rem; display: flex; justify-content: space-between; align-items: center; }
-    h1 { font-size: 1.8rem; font-weight: 600; }
-    
-    .btn-back {
-      color: #cfcbff; text-decoration: none; font-weight: 600;
-      border: 1px solid rgba(207, 203, 255, 0.3); padding: 0.5rem 1.2rem; border-radius: 2rem;
-      transition: 0.3s;
-    }
-    .btn-back:hover { background: rgba(207, 203, 255, 0.1); border-color: #cfcbff; }
-
-    /* Grid Gallery */
-    .gallery {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-      gap: 1.5rem;
-      max-width: 1200px;
-      margin: 2rem auto;
-      padding: 0 1.5rem 4rem;
-    }
-
-    .card {
-      background: #16161a;
-      border-radius: 1rem;
-      overflow: hidden;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-      transition: transform 0.4s ease;
-      /* Aspekt-Ratio Hack für gleichmäßige Bilder */
-      aspect-ratio: 4/3; 
-    }
-
-    .card:hover { transform: translateY(-10px); }
-
-    .card img {
-      width: 100%; height: 100%; object-fit: cover;
-      transition: transform 0.6s ease, filter 0.4s ease;
-      filter: grayscale(20%);
-    }
-
-    .card:hover img { transform: scale(1.1); filter: grayscale(0%); }
-
-    footer { text-align: center; padding: 2rem; opacity: 0.5; font-size: 0.8rem; }
-  </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sichtungen – Galerie der Wildnis | Rothirsch</title>
+  <meta name="description" content="Sichtungen des legendären Rothirschs – von Nebelwäldern über Savannen bis zu den Gletschern des Nordens.">
+  <meta name="theme-color" content="#0c0e0b">
+  <link rel="canonical" href="https://www.rothirsch.net/gallery.html">
+  <meta property="og:title" content="Sichtungen – Galerie der Wildnis">
+  <meta property="og:image" content="https://www.rothirsch.net/images/opt/og.jpg">
+  <link rel="icon" href="favicon.png" type="image/png">
+  <link rel="apple-touch-icon" href="images/opt/apple-touch-icon.png">
+  <link rel="stylesheet" href="style.css">
+  <script>document.documentElement.classList.add('js')</script>
+  <script src="site.js" defer></script>
 </head>
 <body>
+  <a class="skip" href="#main">Zum Inhalt springen</a>
 
-  <div class="header-container">
-    <h1>Sichtungen</h1>
-    <a href="index.html" class="btn-back">Zurück</a>
-  </div>
+  <header class="site-header">
+    <div class="wrap">
+      <a class="brand" href="index.html"><img src="images/opt/favicon-32.png" width="28" height="28" alt="">Rothirsch</a>
+      <nav class="nav" aria-label="Hauptnavigation">
+        <a href="index.html">Start</a>
+        <a href="gallery.html" aria-current="page">Galerie</a>
+        <a href="myth.html">Mythos</a>
+        <a href="hub.html">Links</a>
+      </nav>
+    </div>
+  </header>
 
-  <section class="gallery">
-    <div class="card">
-      <img src="images/rothirsch7.png" alt="Hirsch 1">
+  <main id="main" class="wrap">
+    <div class="page-head">
+      <span class="eyebrow">Galerie der Wildnis</span>
+      <h1>Sichtungen</h1>
+      <p>Seltene Momente, festgehalten an den entlegensten Orten. Tippe auf ein Bild, um es groß zu sehen.</p>
     </div>
-    <div class="card">
-      <img src="images/rothirsch2.jpg" alt="Hirsch 2">
-    </div>
-    <div class="card">
-      <img src="images/rothirsch6.png" alt="Hirsch 3">
-    </div>
-    <div class="card">
-      <img src="images/rothirsch5.png" alt="Hirsch 4">
-    </div>
-    <div class="card">
-      <img src="images/rothirsch3.jpg" alt="Hirsch 5">
-    </div>
-    <div class="card">
-      <img src="images/rothirsch4.png" alt="Hirsch 6">
-    </div>
-  </section>
 
-  <footer>© Der Rothirsch - Galerie</footer>
+    <div class="masonry">
+      <a href="images/opt/rothirsch7-960.webp" data-lightbox>
+        <img src="images/opt/rothirsch7-480.webp" width="480" height="648" decoding="async" alt="Rothirsch vor Gletschern und Eisschollen">
+      </a>
+      <a href="images/opt/rothirsch2-960.webp" data-lightbox>
+        <img src="images/opt/rothirsch2-480.webp" width="480" height="481" decoding="async" alt="Rothirsch zwischen hohen Bäumen im Wald">
+      </a>
+      <a href="images/opt/rothirsch6-960.webp" data-lightbox>
+        <img src="images/opt/rothirsch6-480.webp" width="480" height="645" decoding="async" alt="Rothirsch in der Savanne vor einem Vulkan">
+      </a>
+      <a href="images/opt/rothirsch5-960.webp" data-lightbox>
+        <img src="images/opt/rothirsch5-480.webp" width="480" height="720" loading="lazy" decoding="async" alt="Rothirsch auf einem Waldweg im Herbst">
+      </a>
+      <a href="images/opt/rothirsch3-1600.webp" data-lightbox>
+        <img src="images/opt/rothirsch3-480.webp" width="480" height="480" loading="lazy" decoding="async" alt="Rothirsch auf einem Felsen bei Sonnenuntergang">
+      </a>
+      <a href="images/opt/rothirsch4-960.webp" data-lightbox>
+        <img src="images/opt/rothirsch4-480.webp" width="480" height="720" loading="lazy" decoding="async" alt="Röhrender Rothirsch im goldenen Licht">
+      </a>
+      <a href="images/opt/rothirsch1-1600.webp" data-lightbox>
+        <img src="images/opt/rothirsch1-480.webp" width="480" height="480" loading="lazy" decoding="async" alt="Rothirsch auf einer Bergwiese bei Sonnenuntergang">
+      </a>
+    </div>
+  </main>
 
+  <dialog class="lightbox" id="lightbox" aria-label="Bildansicht">
+    <img src="data:," alt="">
+    <button class="lb-btn lb-close" type="button" aria-label="Schließen">×</button>
+    <button class="lb-btn lb-prev" type="button" aria-label="Vorheriges Bild">‹</button>
+    <button class="lb-btn lb-next" type="button" aria-label="Nächstes Bild">›</button>
+    <span class="lb-count" aria-live="polite"></span>
+  </dialog>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <span>© Der Rothirsch – Galerie</span>
+      <nav aria-label="Fußzeile">
+        <a href="index.html">Start</a>
+        <a href="myth.html">Mythos</a>
+        <a href="hub.html">Links</a>
+      </nav>
+    </div>
+  </footer>
 </body>
 </html>
