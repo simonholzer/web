@@ -227,6 +227,7 @@ h1, h2, h3 { font-family: var(--serif); font-weight: 600; line-height: 1.15; let
 .link-card .icon.light { background: #f6f4ef; }
 .link-card .icon img { max-height: 100%; width: auto; object-fit: contain; transition: transform .5s var(--ease); }
 .link-card .icon.pixel img { image-rendering: pixelated; }
+.link-card .icon.small img { max-height: 72%; }
 .link-card .meta { display: flex; align-items: center; justify-content: space-between; gap: .5rem; padding: 1rem 1.2rem; border-top: 1px solid var(--line); }
 .link-card h2 { font-size: 1.25rem; }
 .link-card small { color: var(--muted); font-size: .85rem; }
@@ -247,13 +248,6 @@ h1, h2, h3 { font-family: var(--serif); font-weight: 600; line-height: 1.15; let
 .site-footer a { text-decoration: none; }
 .site-footer a:hover { color: var(--gold-soft); }
 
-.corner-link {
-  position: fixed; left: 14px; bottom: 14px; z-index: 40; opacity: .65;
-  transition: opacity .3s, transform .3s var(--ease);
-}
-.corner-link img { width: 42px; height: auto; }
-.corner-link:hover { opacity: 1; transform: scale(1.1) rotate(-6deg); }
-@media (max-width: 1320px) { body:has(.corner-link) .site-footer .wrap { padding-left: 3.25rem; } }
 
 /* ---------- Scroll reveal ---------- */
 .js .reveal { opacity: 0; transform: translateY(18px); transition: opacity .8s var(--ease), transform .8s var(--ease); }
